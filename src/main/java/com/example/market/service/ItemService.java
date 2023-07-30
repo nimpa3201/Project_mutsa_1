@@ -25,9 +25,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
-    private final ItemRepository repository;
+    private final ItemRepository itemrepository;
 
-    public ItemDTO create(ItemDTO dto) {
+    public ItemDTO itemcreate(ItemDTO dto) {
         ItemEntity newItem = new ItemEntity();
         newItem.setTitle(dto.getTitle());
         newItem.setDescription(dto.getDescription());
@@ -35,14 +35,14 @@ public class ItemService {
         newItem.setStatus("판매중");
         newItem.setWriter(dto.getWriter());
         newItem.setPassword(dto.getPassword());
-        return ItemDTO.fromEntity(repository.save(newItem));
+        return ItemDTO.fromEntity(itemrepository.save(newItem));
     }
 
 
 
     public ItemDTO readItem(Long id) {
         Optional<ItemEntity> optionalEntity
-                = repository.findById(id);
+                = itemrepository.findById(id);
         if (optionalEntity.isPresent())
             return ItemDTO.fromEntity(optionalEntity.get());
         else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -50,7 +50,7 @@ public class ItemService {
 
 
     public ItemDTO update(Long id,ItemDTO dto) {
-        Optional<ItemEntity> optionalItem = repository.findById(id);
+        Optional<ItemEntity> optionalItem = itemrepository.findById(id);
         if (optionalItem.isPresent()) {
             ItemEntity upItem = optionalItem.get();
             if (upItem.getPassword().equals(dto.getPassword())) {
@@ -59,7 +59,7 @@ public class ItemService {
                 upItem.setMin_price_wanted(dto.getMin_price_wanted());
                 upItem.setWriter(dto.getWriter());
                 upItem.setPassword(dto.getPassword());
-                repository.save(upItem);
+                itemrepository.save(upItem);
                 return ItemDTO.fromEntity(upItem);
             }
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -71,14 +71,14 @@ public class ItemService {
 
     public Page<ItemDTO> readItemAll(Long page, Long limit) {
         Pageable pageable = PageRequest.of(Math.toIntExact(page), Math.toIntExact(limit));
-        Page<ItemEntity> ItemEntityPage = repository.findAll(pageable);
+        Page<ItemEntity> ItemEntityPage = itemrepository.findAll(pageable);
         Page<ItemDTO> ItemDtoPage = ItemEntityPage.map(ItemDTO:: fromEntity);
         return ItemDtoPage;
     }
 
     public ItemDTO updateImage(Long id,String password, MultipartFile Image){
         Optional<ItemEntity> optionalItem
-                = repository.findById(id);
+                = itemrepository.findById(id);
         if (optionalItem.isEmpty())
            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         ItemEntity itemEntity = optionalItem.get();
@@ -107,7 +107,7 @@ public class ItemService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         itemEntity.setImage_url(String.format("/static/%d/%s", id, profileFilename));
-        return ItemDTO.fromEntity(repository.save(itemEntity));
+        return ItemDTO.fromEntity(itemrepository.save(itemEntity));
     }
 
 
@@ -115,7 +115,7 @@ public class ItemService {
     public ResponseDTO delete(long id, ItemDTO dto) {
         ResponseDTO responseDto = new ResponseDTO();
         responseDto.setMessage("물품을 삭제했습니다");
-        Optional<ItemEntity> optionalItem = repository.findById(id);
+        Optional<ItemEntity> optionalItem = itemrepository.findById(id);
 
         if (optionalItem.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 아이템을 찾을 수 없습니다.");
@@ -123,7 +123,7 @@ public class ItemService {
         ItemEntity item = optionalItem.get();
 
         if (dto.getWriter().equals(item.getWriter())&&dto.getPassword().equals(item.getPassword())) {
-            repository.deleteById(id);
+            itemrepository.deleteById(id);
             return responseDto;
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");

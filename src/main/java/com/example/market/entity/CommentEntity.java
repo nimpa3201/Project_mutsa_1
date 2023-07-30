@@ -3,7 +3,6 @@ package com.example.market.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NonNull;
-import org.antlr.v4.runtime.misc.NotNull;
 
 @Data
 @Entity
@@ -13,7 +12,7 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NonNull
-    private Long item_id;
+    private Long itemId;
     @NonNull
     private String writer;
     @NonNull

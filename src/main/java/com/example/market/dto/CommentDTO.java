@@ -7,7 +7,7 @@ import lombok.Data;
 public class CommentDTO {
     private Long id; // 댓글 id
 
-    private Long item_id; // 등록된 물품 id
+    private Long itemId; // 등록된 물품 id
 
     private String writer;
 
@@ -20,7 +20,7 @@ public class CommentDTO {
     public static CommentDTO fromEntity(CommentEntity entity){
         CommentDTO dto = new CommentDTO();
         dto.setId(entity.getId());
-        dto.setItem_id(entity.getItem_id());
+        dto.setItemId(entity.getItemId());
         dto.setWriter(entity.getWriter());
         dto.setPassword(entity.getPassword());
         dto.setContent(entity.getContent());

@@ -28,7 +28,7 @@ public class ItemController {
     public ResponseDTO create(@Valid @RequestBody ItemDTO dto) {
         ResponseDTO responseDto = new ResponseDTO();
         responseDto.setMessage("동록이 완료되었습니다");
-        service.create(dto);
+        service.itemcreate(dto);
         return responseDto;
     }
     @GetMapping

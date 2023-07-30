@@ -16,12 +16,11 @@ public class CommentController {
     private final CommentService service;
 
     @PostMapping
-
     public ResponseDTO createComment (@Valid @RequestBody CommentDTO dto ,
                                       @PathVariable ("itemId") Long itemId) {
         ResponseDTO responseDto = new ResponseDTO();
         responseDto.setMessage("댓글이 등록되었습니다.");
-        service.create(dto,itemId);
+        service.commentcreate(dto,itemId);
         return responseDto;
     }
 
@@ -53,4 +52,13 @@ public class CommentController {
         return responseDTO;
     }
 
+//    @PutMapping("/{commentId}/reply")
+//    public  ResponseDTO replay(@PathVariable("commentId") Long commentId,
+//                               @RequestBody CommentDTO dto){
+//        ResponseDTO responseDTO = new ResponseDTO();
+//        responseDTO.setMessage("댓글에 답변이 추가되었습니다.");
+//        service.userReply(commentId,dto);
+//        return responseDTO;
+//
+//    }
 }

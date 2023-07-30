@@ -26,7 +26,7 @@ public class CommentService {
     private final ItemRepository itemrepository;
     private final CommentRepository commentrepository;
 
-    public CommentDTO create(CommentDTO dto, Long id) {
+    public CommentDTO commentcreate(CommentDTO dto, Long id) {
         Optional<ItemEntity> optionalEntity
                 = itemrepository.findById(id);
         if (!optionalEntity.isPresent())
@@ -36,7 +36,7 @@ public class CommentService {
         newComment.setWriter(dto.getWriter());
         newComment.setPassword(dto.getPassword());
         newComment.setContent(dto.getContent());
-        newComment.setItem_id(id);
+        newComment.setItemId(id);
         return CommentDTO.fromEntity(commentrepository.save(newComment));
     }
 
@@ -75,14 +75,17 @@ public class CommentService {
         if (!optionalComment.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         CommentEntity upComment = optionalComment.get();
-        if (upComment.getPassword().equals(dto.getPassword())) {
-            commentrepository.deleteById(commentId);
+        if (!upComment.getPassword().equals(dto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
+        commentrepository.deleteById(commentId);
+        }
+//    public CommentDTO userReply(Long commentId, CommentDTO dto)  {
+//
+//    }
     }
 
-            }
+
 
 
 
