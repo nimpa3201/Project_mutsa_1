@@ -7,6 +7,8 @@ import com.example.market.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController  // @ResponseBody 생략 가능
@@ -14,13 +16,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService service;
+    private final UserDetailsManager manager;
 
     @PostMapping
     public ResponseDTO createComment (@Valid @RequestBody CommentDTO dto ,
-                                      @PathVariable ("itemId") Long itemId) {
+                                      @PathVariable ("itemId") Long itemId,
+                                      Authentication authentication) {
         ResponseDTO responseDto = new ResponseDTO();
         responseDto.setMessage("댓글이 등록되었습니다.");
-        service.commentcreate(dto,itemId);
+        service.commentcreate(dto,itemId,authentication);
         return responseDto;
     }
 
@@ -34,10 +38,11 @@ public class CommentController {
     }
     @PutMapping("/{commentId}")
     public ResponseDTO updateComment(@PathVariable("commentId") Long commentId,
-                                     @RequestBody CommentDTO dto){
+                                     @RequestBody CommentDTO dto,
+                                        Authentication authentication){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setMessage("댓글이 수정되었습니다.");
-        service.update(commentId,dto);
+        service.update(commentId,dto,authentication);
         return responseDTO;
     }
 
@@ -45,20 +50,22 @@ public class CommentController {
 
     @DeleteMapping("/{commentId}")
     public ResponseDTO deleteComment(@PathVariable("commentId") Long commentId,
-                                     @RequestBody CommentDTO dto){
+                                     @RequestBody CommentDTO dto ,
+                                     Authentication authentication){
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setMessage("댓글이 삭제되었습니다");
-        service.delete(commentId,dto);
+        service.delete(commentId,dto,authentication);
         return responseDTO;
     }
 
-//    @PutMapping("/{commentId}/reply")
-//    public  ResponseDTO replay(@PathVariable("commentId") Long commentId,
-//                               @RequestBody CommentDTO dto){
-//        ResponseDTO responseDTO = new ResponseDTO();
-//        responseDTO.setMessage("댓글에 답변이 추가되었습니다.");
-//        service.userReply(commentId,dto);
-//        return responseDTO;
-//
-//    }
+    @PutMapping("/{commentId}/reply")
+    public  ResponseDTO replay(@PathVariable("commentId") Long commentId,
+                               @RequestBody CommentDTO dto,
+                               Authentication authentication){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setMessage("댓글에 답변이 추가되었습니다.");
+        service.userReply(commentId,dto,authentication);
+        return responseDTO;
+
+    }
 }

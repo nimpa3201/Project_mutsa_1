@@ -1,8 +1,12 @@
 package com.example.market.dto;
 
 import com.example.market.entity.ItemEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
+@AllArgsConstructor
 @Data
 public class ItemDTO {
     private Integer id;
@@ -11,21 +15,16 @@ public class ItemDTO {
     private String image_url;
     private Integer min_price_wanted;
     private String status;
-    private String writer;
-    private String  password;
 
 
-
- public static ItemDTO fromEntity (ItemEntity entity) {
-        ItemDTO dto = new ItemDTO();
-        dto.setId(entity.getId());
-        dto.setTitle(entity.getTitle());
-        dto.setDescription(entity.getDescription());
-        dto.setMin_price_wanted(entity.getMin_price_wanted());
-        dto.setStatus(entity.getStatus());
-        dto.setWriter(entity.getWriter());
-        dto.setPassword(entity.getPassword());
-        return dto;
+    public static ItemDTO fromEntity(ItemEntity entity) {
+        return ItemDTO.builder()
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .description(entity.getDescription())
+                .image_url(entity.getImage_url())
+                .min_price_wanted(entity.getMin_price_wanted())
+                .status(entity.getStatus())
+                .build();
     }
-
 }

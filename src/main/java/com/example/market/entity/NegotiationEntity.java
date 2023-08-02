@@ -11,16 +11,18 @@ public class NegotiationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NonNull
-    private Long itemId;
+
     @NonNull
     private Long suggestedPrice;
     private String status;
-    @NonNull
-    private String writer;
 
-    @NonNull
-    private String password;
+
+    @ManyToOne
+    private  UserEntity Users;
+
+    @ManyToOne
+    private ItemEntity salesItem;
+
 
     public NegotiationEntity(){
 

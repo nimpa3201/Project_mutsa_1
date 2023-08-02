@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "sales_item")
@@ -22,11 +24,15 @@ public class ItemEntity {
     private Integer min_price_wanted;
 
     private String status;
-    @NonNull
-    private String writer;
-    @NonNull
-    private String  password;
 
+    @OneToMany(mappedBy = "salesItem")
+    private List<CommentEntity> comments;
+
+    @OneToMany(mappedBy = "salesItem")
+    private List<NegotiationEntity> negotiations;
+
+    @ManyToOne
+    private  UserEntity Users;
     public ItemEntity() {
 
     }

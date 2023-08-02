@@ -1,10 +1,13 @@
 package com.example.market.service;
+import com.example.market.authentication.UserRepository;
 import com.example.market.dto.ResponseDTO;
+import com.example.market.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import com.example.market.dto.ItemDTO;
 import com.example.market.entity.ItemEntity;
@@ -26,15 +29,20 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemrepository;
+    private final UserRepository userRepository;
 
-    public ItemDTO itemcreate(ItemDTO dto) {
+    public ItemDTO itemcreate(ItemDTO dto,Authentication authentication) {
+        Optional<UserEntity> userOptionalEntity
+                = userRepository.findByUsername(authentication.getName());
+
+        UserEntity newUser = userOptionalEntity.get();
+
         ItemEntity newItem = new ItemEntity();
         newItem.setTitle(dto.getTitle());
         newItem.setDescription(dto.getDescription());
         newItem.setMin_price_wanted(dto.getMin_price_wanted());
         newItem.setStatus("판매중");
-        newItem.setWriter(dto.getWriter());
-        newItem.setPassword(dto.getPassword());
+        newItem.setUsers(newUser);
         return ItemDTO.fromEntity(itemrepository.save(newItem));
     }
 
@@ -49,16 +57,14 @@ public class ItemService {
     }
 
 
-    public ItemDTO update(Long id,ItemDTO dto) {
+    public ItemDTO itemUpdate(Long id, ItemDTO dto, Authentication authentication) {
         Optional<ItemEntity> optionalItem = itemrepository.findById(id);
         if (optionalItem.isPresent()) {
             ItemEntity upItem = optionalItem.get();
-            if (upItem.getPassword().equals(dto.getPassword())) {
+            if (upItem.getUsers().getUsername().equals(authentication.getName())) {
                 upItem.setTitle(dto.getTitle());
                 upItem.setDescription(dto.getDescription());
                 upItem.setMin_price_wanted(dto.getMin_price_wanted());
-                upItem.setWriter(dto.getWriter());
-                upItem.setPassword(dto.getPassword());
                 itemrepository.save(upItem);
                 return ItemDTO.fromEntity(upItem);
             }
@@ -76,23 +82,22 @@ public class ItemService {
         return ItemDtoPage;
     }
 
-    public ItemDTO updateImage(Long id,String password, MultipartFile Image){
-        Optional<ItemEntity> optionalItem
-                = itemrepository.findById(id);
+    public ItemDTO updateImage(Long id, MultipartFile Image,Authentication authentication){
+        Optional<ItemEntity> optionalItem = itemrepository.findById(id);
+        Optional<UserEntity> userOptionalEntity
+                = userRepository.findByUsername(authentication.getName());
         if (optionalItem.isEmpty())
            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         ItemEntity itemEntity = optionalItem.get();
-        if(!itemEntity.getPassword().equals(password))
+
+        if(!itemEntity.getUsers().getUsername().equals(authentication.getName()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-
         String profileDir = String.format("media/%d/", id);
         try {
             Files.createDirectories(Path.of(profileDir));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
 
         String originalFilename = Image.getOriginalFilename();
         String[] fileNameSplit = originalFilename.split("\\.");
@@ -112,7 +117,7 @@ public class ItemService {
 
 
 
-    public ResponseDTO delete(long id, ItemDTO dto) {
+    public ResponseDTO delete(long id, ItemDTO dto,Authentication authentication) {
         ResponseDTO responseDto = new ResponseDTO();
         responseDto.setMessage("물품을 삭제했습니다");
         Optional<ItemEntity> optionalItem = itemrepository.findById(id);
@@ -122,7 +127,7 @@ public class ItemService {
         }
         ItemEntity item = optionalItem.get();
 
-        if (dto.getWriter().equals(item.getWriter())&&dto.getPassword().equals(item.getPassword())) {
+        if (item.getUsers().getUsername().equals(authentication.getName())) {
             itemrepository.deleteById(id);
             return responseDto;
         }

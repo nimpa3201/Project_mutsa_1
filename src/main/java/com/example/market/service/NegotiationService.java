@@ -1,13 +1,11 @@
 package com.example.market.service;
 
 
-import com.example.market.dto.CommentDTO;
-import com.example.market.dto.ItemDTO;
+import com.example.market.authentication.UserRepository;
 import com.example.market.dto.NegotiationDTO;
-import com.example.market.entity.CommentEntity;
 import com.example.market.entity.ItemEntity;
 import com.example.market.entity.NegotiationEntity;
-import com.example.market.repository.CommentRepository;
+import com.example.market.entity.UserEntity;
 import com.example.market.repository.ItemRepository;
 import com.example.market.repository.NegotiationRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,42 +27,35 @@ import java.util.Optional;
 public class NegotiationService {
     private final NegotiationRepository negotiationrepository;
     private final ItemRepository itemrepository;
+    private final UserRepository userrepository;
 
-    public NegotiationDTO negocreate(NegotiationDTO dto, Long id) {
+
+    public NegotiationDTO negocreate(NegotiationDTO dto, Long id, Authentication authentication) {
         Optional<ItemEntity> optionalEntity
                 = itemrepository.findById(id);
+        Optional<UserEntity> userOptionalEntity
+                = userrepository.findByUsername(authentication.getName());
         if (!optionalEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        //등록된 물품에 대하여 구매 제안을 등록할 수 있다.
-        //이때 반드시 포함되어야 하는 내용은 **대상 물품, 제안 가격, 작성자**이다.
-        //또한 구매 제안을 등록할 때, 비밀번호 항목을 추가해서 등록한다.
-        // 구매 제안이 등록될 때, 제안의 상태는 **제안** 상태가 된다.
-
+        ItemEntity newItem = optionalEntity.get();
+        UserEntity newUser = userOptionalEntity.get();
         NegotiationEntity newNego = new NegotiationEntity();
-        newNego.setWriter(dto.getWriter());
-        newNego.setPassword(dto.getPassword());
         newNego.setSuggestedPrice(dto.getSuggestedPrice());
-        newNego.setItemId(id);
         newNego.setStatus("제안");
+        newNego.setSalesItem(newItem);
+        newNego.setUsers(newUser);
+
 
         return NegotiationDTO.fromEntity(negotiationrepository.save(newNego));
     }
 
-    public Page<NegotiationDTO> readMaster(Long itemId, Long page, Long limit, String writer, String password) {
-        Optional<ItemEntity> optionalEntity
-                = itemrepository.findById(itemId);
-        if (!optionalEntity.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+    public Page<NegotiationDTO> readMaster(Long page, Long limit, Authentication authentication) {
 
-        ItemEntity itemEntity = optionalEntity.get();
-        if (!itemEntity.getPassword().equals(password) && itemEntity.getWriter().equals(writer)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+
         List<NegotiationEntity> allNegoList = negotiationrepository.findAll();
         List<NegotiationEntity> negolist = new ArrayList<>();
         for (NegotiationEntity elem : allNegoList) {
-            if (elem.getItemId() == itemId) {
+            if (elem.getSalesItem().getUsers().getUsername().equals(authentication.getName())) {
                 negolist.add(elem);
             }
         }
@@ -82,12 +74,12 @@ public class NegotiationService {
 
     }
 
-    public Page<NegotiationDTO> readUser(Long page, Long limit, String writer, String password) {
+    public Page<NegotiationDTO> readUser(Long page, Long limit, String writer, String password, Authentication authentication) {
         List<NegotiationEntity> allNegoList
                 = negotiationrepository.findAll();
         List<NegotiationEntity> buyerNegoList = new ArrayList<>();
         for (NegotiationEntity elem : allNegoList) {
-            if (elem.getWriter().equals(writer) && elem.getPassword().equals(password)) {
+            if (elem.getUsers().getUsername().equals(authentication)) {
                 buyerNegoList.add(elem);
             }
         }
@@ -109,7 +101,7 @@ public class NegotiationService {
 
     }
 
-    public NegotiationDTO  proposal(NegotiationDTO dto, Long id) {
+    public NegotiationDTO proposal(NegotiationDTO dto, Long id, Authentication authentication) {
         // proposalId가 있는지 체크
         Optional<NegotiationEntity> optionalNegoEntity
                 = negotiationrepository.findById(id);
@@ -119,7 +111,7 @@ public class NegotiationService {
 
         NegotiationEntity upNego = optionalNegoEntity.get();
         // 작성자의 아이디 비밀번호 체크 이후
-        if (upNego.getPassword().equals(dto.getPassword()) && upNego.getWriter().equals(dto.getWriter())) {
+        if (upNego.getUsers().getUsername().equals(authentication.getName())) {
             // upNego의 suggestedPrice 변경
             upNego.setSuggestedPrice(dto.getSuggestedPrice());
             negotiationrepository.save(upNego);
@@ -128,7 +120,7 @@ public class NegotiationService {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
-    public NegotiationDTO changeStatus(NegotiationDTO dto, Long proposalId, Long itemId) {
+    public NegotiationDTO changeStatus(NegotiationDTO dto, Long proposalId, Long itemId, Authentication authentication) {
         // proposalId가 있는지 체크
         Optional<NegotiationEntity> optionalNegoEntity
                 = negotiationrepository.findById(proposalId);
@@ -138,16 +130,14 @@ public class NegotiationService {
 
         // item의 writer 체크를 위한 itemEntity
         Optional<ItemEntity> optionalItemEntity = itemrepository.findById(itemId);
-        if(!optionalItemEntity.isPresent())
+        if (!optionalItemEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         NegotiationEntity upNego = optionalNegoEntity.get();
         ItemEntity upItem = optionalItemEntity.get();
 
-        // dto와 upNego의 id/pw 체크 이후 dto와 upItem의 id/pw 체크
-        if (upItem.getPassword().equals(dto.getPassword())
-                && upItem.getWriter().equals(dto.getWriter())
-                && upNego.getStatus().equals("제안")) {
+
+        if (upNego.getUsers().getUsername().equals(authentication.getName())) {
             // upNego의 status 변경
             upNego.setStatus(dto.getStatus());
             negotiationrepository.save(upNego);
@@ -156,7 +146,7 @@ public class NegotiationService {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
-    public NegotiationDTO acceptProposal(NegotiationDTO dto, Long proposalId, Long itemId) {
+    public NegotiationDTO acceptProposal(NegotiationDTO dto, Long proposalId, Long itemId, Authentication authentication) {
         // proposalId가 있는지 체크
         Optional<NegotiationEntity> optionalNegoEntity
                 = negotiationrepository.findById(proposalId);
@@ -165,46 +155,62 @@ public class NegotiationService {
 
         // 상태를 바꾸기 위한 itemEntity
         Optional<ItemEntity> optionalItemEntity = itemrepository.findById(itemId);
-        if(!optionalItemEntity.isPresent())
+        if (!optionalItemEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         // negotiation list 가져오기
-        List<NegotiationEntity> negoList = negotiationrepository.findByItemId(itemId);
+        List<NegotiationEntity> negoList = negotiationrepository.findBySalesItem_Id(itemId);
 
-        NegotiationEntity upNego = optionalNegoEntity.get();
+        NegotiationEntity nego = optionalNegoEntity.get();
         ItemEntity upItem = optionalItemEntity.get();
 
-        // 작성자의 아이디 비밀번호 체크 이후 status가 제안일 경우
-        if (upNego.getPassword().equals(dto.getPassword())
-                && upNego.getWriter().equals(dto.getWriter())
-                && upNego.getStatus().equals("수락")) {
-            // upNego의 status를 확정으로 변경
-            upNego.setStatus(dto.getStatus());
-            // 대상 물품의 상태를 판매 완료로 변경
-            upItem.setStatus("판매완료");
-            // 다른 제안을 모두 거절로 변경
-            for(NegotiationEntity nego : negoList){
-                if(nego.getStatus().equals("확정")) continue;
+// 작성자의 아이디 비밀번호 체크 이후 status가 제안일 경우
 
-                nego.setStatus("거절");
+        // 다른 제안을 모두 거절로 변경
+        for (NegotiationEntity upNego : negoList) {
+            if (upNego.getUsers().getUsername().equals(authentication.getName())) {
+                if (upNego.getStatus().equals("확정")) {
+                    // upNego의 status 확정으로 변경
+                    upNego.setStatus(dto.getStatus());
+                    continue;
+                }
+
+                // 다른 제안을 모두 거절로 변경
+                upNego.setStatus("거절");
+
             }
 
-            negotiationrepository.save(upNego);
-            return NegotiationDTO.fromEntity(upNego);
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        upItem.setStatus("판매완료");
+        negotiationrepository.save(nego);
+        return NegotiationDTO.fromEntity(nego);
+
+        // 대상 물품의 상태를 판매 완료로 변경
+
     }
 
 
-    public void deleteProposal(NegotiationDTO dto, Long proposald) {
-        Optional<NegotiationEntity> optinalNegoentity = negotiationrepository.findById(proposald);
-        if (!optinalNegoentity.isPresent()) {
+
+
+
+
+
+
+
+    public void deleteProposal(NegotiationDTO dto, Long proposald,Authentication authentication) {
+        Optional<NegotiationEntity> optinalNegoentity
+                = negotiationrepository.findById(proposald);
+        if (!optinalNegoentity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+
         NegotiationEntity upNego = optinalNegoentity.get();
-        if (upNego.getPassword().equals(dto.getPassword()) && upNego.getWriter().equals(dto.getWriter())) {
+        if (!upNego.getUsers().getUsername().equals(authentication.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
             negotiationrepository.deleteById(proposald);
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
     }
-}
+
+
+
