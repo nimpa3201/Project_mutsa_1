@@ -1,4 +1,4 @@
-package com.example.market.authentication;
+package com.example.market.repository;
 
 import com.example.market.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

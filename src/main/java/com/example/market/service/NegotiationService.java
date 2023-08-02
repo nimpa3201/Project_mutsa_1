@@ -1,7 +1,7 @@
 package com.example.market.service;
 
 
-import com.example.market.authentication.UserRepository;
+import com.example.market.repository.UserRepository;
 import com.example.market.dto.NegotiationDTO;
 import com.example.market.entity.ItemEntity;
 import com.example.market.entity.NegotiationEntity;
@@ -102,17 +102,13 @@ public class NegotiationService {
     }
 
     public NegotiationDTO proposal(NegotiationDTO dto, Long id, Authentication authentication) {
-        // proposalId가 있는지 체크
         Optional<NegotiationEntity> optionalNegoEntity
                 = negotiationrepository.findById(id);
-        // 없으면 예외 던지기
         if (!optionalNegoEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         NegotiationEntity upNego = optionalNegoEntity.get();
-        // 작성자의 아이디 비밀번호 체크 이후
         if (upNego.getUsers().getUsername().equals(authentication.getName())) {
-            // upNego의 suggestedPrice 변경
             upNego.setSuggestedPrice(dto.getSuggestedPrice());
             negotiationrepository.save(upNego);
             return NegotiationDTO.fromEntity(upNego);
@@ -121,14 +117,13 @@ public class NegotiationService {
     }
 
     public NegotiationDTO changeStatus(NegotiationDTO dto, Long proposalId, Long itemId, Authentication authentication) {
-        // proposalId가 있는지 체크
         Optional<NegotiationEntity> optionalNegoEntity
                 = negotiationrepository.findById(proposalId);
-        // 없으면 예외 던지기
+
         if (!optionalNegoEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        // item의 writer 체크를 위한 itemEntity
+
         Optional<ItemEntity> optionalItemEntity = itemrepository.findById(itemId);
         if (!optionalItemEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -138,7 +133,6 @@ public class NegotiationService {
 
 
         if (upNego.getUsers().getUsername().equals(authentication.getName())) {
-            // upNego의 status 변경
             upNego.setStatus(dto.getStatus());
             negotiationrepository.save(upNego);
             return NegotiationDTO.fromEntity(upNego);
@@ -164,18 +158,12 @@ public class NegotiationService {
         NegotiationEntity nego = optionalNegoEntity.get();
         ItemEntity upItem = optionalItemEntity.get();
 
-// 작성자의 아이디 비밀번호 체크 이후 status가 제안일 경우
-
-        // 다른 제안을 모두 거절로 변경
         for (NegotiationEntity upNego : negoList) {
             if (upNego.getUsers().getUsername().equals(authentication.getName())) {
                 if (upNego.getStatus().equals("확정")) {
-                    // upNego의 status 확정으로 변경
                     upNego.setStatus(dto.getStatus());
                     continue;
                 }
-
-                // 다른 제안을 모두 거절로 변경
                 upNego.setStatus("거절");
 
             }
@@ -184,18 +172,7 @@ public class NegotiationService {
         upItem.setStatus("판매완료");
         negotiationrepository.save(nego);
         return NegotiationDTO.fromEntity(nego);
-
-        // 대상 물품의 상태를 판매 완료로 변경
-
     }
-
-
-
-
-
-
-
-
 
     public void deleteProposal(NegotiationDTO dto, Long proposald,Authentication authentication) {
         Optional<NegotiationEntity> optinalNegoentity

@@ -35,12 +35,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // authHeader가 null이 아니면서 "Bearer " 로 구성되어 있어야
         // 정상적인 인증 정보다.
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            // JWT를 회수하여 JWT가 정상적인 JWT인지를 판단한다.
+
             String token = authHeader.split(" ")[1];
             if (jwtTokenUtils.validate(token)) {
-                // 웹상의 많은 예시
-//                SecurityContextHolder.getContext().setAuthentication();
-                // Security 공식 문서 추천
+
                 SecurityContext context
                         = SecurityContextHolder.createEmptyContext();
                 // JWT에서 사용자 이름을 가져오기

@@ -5,6 +5,7 @@ import com.example.market.dto.NegotiationDTO;
 import com.example.market.dto.ResponseDTO;
 import com.example.market.service.NegotiationService;
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -86,4 +87,9 @@ public class NegotiationController {
     }
 
 
+    @Data
+    public static class JwtRequestDto {
+        private String username;
+        private String password;
+    }
 }

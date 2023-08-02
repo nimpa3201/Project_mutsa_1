@@ -1,12 +1,18 @@
-package com.example.market.authentication;
+package com.example.market.controller;
 
+import com.example.market.authentication.CustomUserDetails;
+import com.example.market.authentication.JwtTokenUtils;
+import com.example.market.dto.JwtRegisterDto;
+import com.example.market.dto.JwtTokenDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
@@ -31,7 +37,7 @@ public class TokenController {
     }
 
     @PostMapping("/issue")
-    public JwtTokenDto issueJwt(@RequestBody JwtRequestDto dto) {
+    public JwtTokenDto issueJwt(@RequestBody NegotiationController.JwtRequestDto dto) {
         // 사용자 정보 회수
         // 로그인 loadUserByUsername
         UserDetails userDetails
@@ -59,10 +65,6 @@ public class TokenController {
         }
         return dto;
     }
-    // 현재 로그인한 User 정보를 확인하기 위한 메서드
-    @GetMapping("/check")
-    public String checkUser(Authentication authentication){
-        String check = authentication.getName();
-        return check;
-    }
 }
+
+

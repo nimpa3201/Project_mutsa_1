@@ -1,9 +1,8 @@
 package com.example.market.service;
 
 
-import com.example.market.authentication.UserRepository;
+import com.example.market.repository.UserRepository;
 import com.example.market.dto.CommentDTO;
-import com.example.market.dto.ItemDTO;
 import com.example.market.entity.CommentEntity;
 import com.example.market.entity.ItemEntity;
 import com.example.market.entity.UserEntity;

@@ -1,10 +1,8 @@
 package com.example.market.service;
-import com.example.market.authentication.UserRepository;
+import com.example.market.repository.UserRepository;
 import com.example.market.dto.ResponseDTO;
 import com.example.market.entity.UserEntity;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -20,9 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service

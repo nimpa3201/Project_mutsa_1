@@ -1,4 +1,4 @@
-package com.example.market.authentication;
+package com.example.market.dto;
 import lombok.Data;
 
 @Data
