@@ -20,11 +20,11 @@ public class UserEntity {
     private String username;
     @Column(nullable = false, unique = true)
     private String password;
-
-
     private String address;
     private String email;
     private String phone;
+
+
     @OneToMany(mappedBy = "Users")
     private List<ItemEntity> Items;
     @OneToMany(mappedBy = "Users")

@@ -1,9 +1,6 @@
-package com.example.market.controller;
+package com.example.market.authentication;
 
-import com.example.market.authentication.CustomUserDetails;
-import com.example.market.authentication.JwtTokenUtils;
-import com.example.market.dto.JwtRegisterDto;
-import com.example.market.dto.JwtTokenDto;
+import com.example.market.controller.NegotiationController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,7 +51,6 @@ public class TokenController {
     @PostMapping("/register")
     public JwtRegisterDto registerUser(@RequestBody JwtRegisterDto dto){
         if (dto.getPassword().equals(dto.getPasswordCheck())) {
-            log.info("password match!");
             manager.createUser(CustomUserDetails.builder()
                     .username(dto.getUsername())
                     .password(passwordEncoder.encode(dto.getPassword()))

@@ -1,0 +1,468 @@
+{
+	"info": {
+		"_postman_id": "3998edc6-fd8f-41a9-8628-3503ff51a1c8",
+		"name": "Mission Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28055518"
+	},
+	"item": [
+		{
+			"name": "POST / items",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"김지\",\r\n    \"description\": \"씨잼\",\r\n    \"min_price_wanted\": 1000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items"
+			},
+			"response": []
+		},
+		{
+			"name": "GET / items/ {itemsId}",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:2222/items/5"
+			},
+			"response": []
+		},
+		{
+			"name": "GET / items 전체 조회",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:2222/items?page=1&limit=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2222",
+					"path": [
+						"items"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT / items/{itemsId}",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"김천\",\r\n    \"description\": \"어쩔티비\",\r\n    \"min_price_wanted\":20000\r\n      \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items/5"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /items/{id2}/image",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/Users/diana/Downloads/옴팡이.png"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": "http://localhost:2222/items/1/image"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE / items/{itemsId}",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items/3"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /items/{itemId}/comments",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\": \"할인 가능하신가요\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items/9/comments"
+			},
+			"response": []
+		},
+		{
+			"name": "GET /items/{itemId}/comments",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \r\n    \"content\": \"할인 가능하신가요?\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2222/items/2/comments?page=0&limit=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2222",
+					"path": [
+						"items",
+						"2",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /items/{itemId}/comments/{commentsId}",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n    \"content\": \"배고파요\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items/1/comments/13"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /items/{itemId}/comments/{commentsId}",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items/5/comments/3"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /items/{itemId}/comments/{commentsId}/reply",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \r\n    \"content\": \"배고파요\",\r\n    \"reply\": \"응답 \"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items/5/comments/6/reply"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /items/{itemId}/proposal",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \r\n    \"suggestedPrice\": 200\r\n    \r\n   \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items/17/proposals"
+			},
+			"response": []
+		},
+		{
+			"name": "GET /items/{itemId}/proposal",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "itemId",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:2222/items/5/proposals?itemId=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2222",
+					"path": [
+						"items",
+						"5",
+						"proposals"
+					],
+					"query": [
+						{
+							"key": "itemId",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /items/{itemId}/proposal/{proposalId}",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \r\n    \"suggestedPrice\": 2000,\r\n    \"status\": \"확정\"\r\n  \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items/1/proposals/1"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /items/{itemId}/proposal/{proposalId}",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwOTU0MTU4LCJleHAiOjE2OTA5NTc3NTh9.jq4yp61LOc2umAuidbTTwK3mcmnLodbir6QqqmGjhXSWAgSK-VZEs0S032rKlnsdH2wNWSg-jrBR5N2sxEiL6w"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/items/5/proposals/6"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /token/register / 회원가입",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"baejeu\",\r\n    \"password\": \"jeu1212\",\r\n    \"passwordCheck\": \"jeu1212\",\r\n    \"address\": \"대전\",\r\n    \"email\": \"baejeu@gmail.com\",\r\n    \"phone\": \"010-1234-5678\"\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/token/register"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /token/issue / 로그인: 토큰발행",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkwNzgxOTc1LCJleHAiOjE2OTA3ODU1NzV9.dlaNPLVW9h2gmsdG-5C1hUm-6D2Fa5JayR-6wcFVni8Yxnapn_70yODFZemjAR9vSnry1YAYdf3LcLg5SuEiow"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"user\",\r\n    \"password\": \"asdf\",\r\n    \"passwordcheck\":\"asdf\"\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:2222/token/issue"
+			},
+			"response": []
+		}
+	]
+}

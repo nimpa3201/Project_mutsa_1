@@ -28,7 +28,7 @@ public class JpaUserDetailsManager implements UserDetailsManager {
                 .password(passwordEncoder.encode("aaaa"))
                 .email("user@gmail.com")
                 .phone("010-1234-5678")
-                .address("제주ㄷㅗ")
+                .address("제주도")
                 .build());
     }
 
@@ -43,15 +43,12 @@ public class JpaUserDetailsManager implements UserDetailsManager {
     // 새로운 사용자를 저장하는 메소드 (선택)
     public void createUser(UserDetails user) {
         log.info("try create user: {}", user.getUsername());
-        // 사용자가 (이미) 있으면 생성할수 없다.
+
         if (this.userExists(user.getUsername())) {
             return;
             // throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-//        UserEntity userEntity = new UserEntity();
-//        userEntity.setUsername(user.getUsername());
-//        userEntity.setPassword(user.getPassword());
-//        this.userRepository.save(userEntity);
+
         try {
             userRepository.save(
                     ((CustomUserDetails) user).newEntity());
